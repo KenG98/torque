@@ -42,13 +42,17 @@ app.get('/', function(req, res){
 	res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/gd', function(req, res){
+	res.send(game);
+});
+
 io.on('connection', function (socket) {
 	console.log('Someone joined the party!');
 
 	socket.id = shortid.generate();
 	game.players[socket.id] = {};
 	game.players[socket.id].position = bar.length / 2;
-	game.players[socket.id].mass = 10000;
+	game.players[socket.id].mass = 50000;
 	// game.players[socket.id].velocity = 0;
 	// game.players[socket.id].acceleration = 0;
 
@@ -90,7 +94,12 @@ var recalculate = function() {
 	bar.angularAcceleration = bar.torque / bar.moment;
 	bar.angularVelocity += bar.angularAcceleration;
 	bar.angle += bar.angularVelocity;
-	console.log(bar.angle);
+
+	if(bar.angle > 1.5 || bar.angle < -1.5){
+		bar.angle = 0;
+		bar.angularAcceleration = 0;
+		bar.angularVelocity = 0;
+	}
 
 	for(block in movingPlayers){
 		game.players[block].position += movingPlayers[block] * 10;

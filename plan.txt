@@ -39,3 +39,11 @@ Physics:
 
 Good note: 
 	- Perhaps the server shouldnt send emit a message to have the client redraw. The server should just emit the game data, and the client should redraw 30 times a second or however much it can.
+
+Notes:
+	- Inefficient to check if theres data in the object every time and recalculate pivot position (on the client side). Maybe use a "setup" function
+	- Make user's piece a different color
+	- make pieces size correspond to their mass
+	- Have the program assign different masses and positions (randomly) to new users.
+	- Moment of inertia changes when users are added and moved. Add that to the algorithm.
+	- Later, if you feel like it, add forces to the users and add friction and slipping to the users.
