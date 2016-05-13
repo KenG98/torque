@@ -46,8 +46,11 @@ io.on('connection', function (socket) {
 	console.log('Someone joined the party!');
 
 	socket.id = shortid.generate();
+	game.players[socket.id] = {};
 	game.players[socket.id].position = bar.length / 2;
-	game.players[socket.id].mass = 1000;
+	game.players[socket.id].mass = 10000;
+	// game.players[socket.id].velocity = 0;
+	// game.players[socket.id].acceleration = 0;
 
 	socket.on('disconnect', function(){
     	console.log('Someone left the party.');
@@ -88,10 +91,13 @@ var recalculate = function() {
 	bar.angularVelocity += bar.angularAcceleration;
 	bar.angle += bar.angularVelocity;
 	console.log(bar.angle);
+
+	for(block in movingPlayers){
+		game.players[block].position += movingPlayers[block] * 10;
+	}
+
+	io.emit('updateData', game);
 };
 
 setInterval(recalculate, 34);
-
-
-
 

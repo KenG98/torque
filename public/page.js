@@ -4,14 +4,26 @@ var canvas = $('#c')[0];
 
 var canv = canvas.getContext("2d");
 
-var gameData = {}
+var gameData = {};
 
 socket.on('updateData', function(data){
 	gameData = data;
 });
 
-function redraw(){
+function drawCircle(x, y, rad) {
 
+}
+
+function drawRod(pivotX, pivotY, pivotPoint, length, angle) {
+
+}
+
+function drawBlock(x, y, sideLen, angle) {
+	
+}
+
+var redraw = function(){
+	
 }
 
 $(document).keydown(function(e) {
@@ -45,3 +57,5 @@ $(document).keyup(function(e) {
     }
     e.preventDefault(); // prevent the default action (scroll / move caret)
 });
+
+window.setInterval(redraw, 34);
