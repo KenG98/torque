@@ -1,0 +1,41 @@
+Torque 
+
+The idea: 
+	- Users access the website and automatically get a character. There is a horizontal bar and a pivot. Before the game starts users get ten or so seconds to place their characters along the bar. After some time gravity kicks in and the bar begins to tilt. The characters have to move back and forth to keep the bar balanced. When it tips over everyone loses and the game restarts.
+
+Dimensions: 
+	- Different weights, different pivot points, torque varies with how heavy you are, how far from the pivot you are (and from the c.o.m), and the angle of the bar. As the bar tilts blocks slide and there is a set friction. Gravity constant and friction constants can vary. Uses forces, torque, angles, constants, etc for calculations.
+
+Technical aspects: 
+	- Uses socket.io and node as a server for real time gameplay.
+
+During gameplay:
+	- The user presses an arrow key. The client calculates how far the user moves to the left or right (according to the angle of the bar, the weight of the block, etc).
+	- This new position is sent to the server.
+	- Server continually recieves positions of players.
+	- Server recalculates torque, angular velocity, angular acceleration
+	- Server moves the bar and players accordingly, then sends data to users
+	- Client renders the image using that data, the process restarts.
+
+The website process: 
+	- User is given a character, the game is played, repeat.
+
+The website process: (how to handle when people join or leave during a game)
+	- A game is played as described above. 
+	- As users go to the website they're taken to a virtual waiting room.
+	- As soon as the last game ends everyone already playing is taken to the staging room where they get 10 seconds to press "play".
+	- A new game starts and this process is repeated.
+
+Potential problems: (on modern computers I don't think these will be an issue)
+	- The server can't handle getting so many position updates so quickly.
+	- Client can't calculate new position quickly enough.
+	- Client can't render a frame quickly enough before the next frame needs to be rendered.
+
+Physics:
+	- Torque:
+		- Bar has c.o.m pulling directly down with the weight of the bar
+		- Bar has pivot pushing up and at whatever angle.
+		- Users have blocks pushing both down and with friction.
+
+Good note: 
+	- Perhaps the server shouldnt send emit a message to have the client redraw. The server should just emit the game data, and the client should redraw 30 times a second or however much it can.

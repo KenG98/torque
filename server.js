@@ -6,7 +6,21 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var port = 3000;
 
-var user_positions = {};
+var players = {};
+
+var gravity = 10;
+
+var bar = {};
+bar.length = 600;
+bar.width = 10;
+bar.com = bar.length / 2;
+bar.pivotPoint = 280; 
+bar.angle = 0; // goes +/- 80 degrees
+
+var game = {};
+game.players = players;
+game.bar = bar;
+game.gravity = gravity;
 
 server.listen(port, function () {
   console.log('Server listening at port ' + port);
@@ -22,18 +36,11 @@ io.on('connection', function (socket) {
 	console.log('Someone joined the party!');
 
 	socket.id = shortid.generate();
-	user_positions[socket.id] = [0, 0];
 
 	socket.on('disconnect', function(){
     	console.log('Someone left the party.');
-    	delete user_positions[socket.id];
 	});
 
-	socket.on('position change', function(movement){
-		user_positions[socket.id][0] = user_positions[socket.id][0] + movement[0];
-		user_positions[socket.id][1] = user_positions[socket.id][1] + movement[1];
-		io.emit('redraw', user_positions);
-	})
+	io.emit('updateDate', game);
 
-	io.emit('redraw', user_positions);
 });
