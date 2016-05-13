@@ -91,7 +91,12 @@ var recalculate = function() {
 	var barTorque = bar.mass * gravity * Math.cos(bar.angle) * barDisplacement;
 	torque += barTorque;
 	bar.torque = torque;
-	bar.angularAcceleration = bar.torque / bar.moment;
+	var additionalMoment = 0;
+	for(block in game.players){
+		var disp = game.players[block].position - game.bar.pivotPoint;
+		additionalMoment += disp * disp * game.players[block].mass;
+	}
+	bar.angularAcceleration = bar.torque / (bar.moment + additionalMoment);
 	bar.angularVelocity += bar.angularAcceleration;
 	bar.angle += bar.angularVelocity;
 

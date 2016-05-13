@@ -47,3 +47,5 @@ Notes:
 	- Have the program assign different masses and positions (randomly) to new users.
 	- Moment of inertia changes when users are added and moved. Add that to the algorithm.
 	- Later, if you feel like it, add forces to the users and add friction and slipping to the users.
+	- look into moving shapes instead of redrawing (for efficiency)
+	
