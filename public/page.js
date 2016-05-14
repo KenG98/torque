@@ -9,6 +9,8 @@ var height = $('body').height();
 var midwidth = width / 2;
 var midheight = height / 2;
 
+var uid;
+
 var canv = canvas.getContext("2d");
 
 var gameData = {};
@@ -16,6 +18,10 @@ var gameData = {};
 socket.on('updateData', function(data){
 	gameData = data;
 });
+
+socket.on('uid', function(id){
+	uid = id;
+})
 
 function drawCircle(x, y, radius) {
 	canv.beginPath();
@@ -43,9 +49,7 @@ function drawBlock(pivotX, pivotY, pivotPoint, position, angle) {
 	var distanceFromPiv = position - pivotPoint;
 	var x = pivotX + Math.cos(angle) * distanceFromPiv;
 	var y = pivotY + Math.sin(angle) * distanceFromPiv;
-	canv.beginPath();
-	canv.arc(x, y, 10, 0, 6.28);
-	canv.stroke();
+	drawCircle(x, y, 10);
 }
 
 var redraw = function(){
@@ -55,11 +59,17 @@ var redraw = function(){
 		canv.clearRect(0, 0, width, height);
 		pivX = (gameData.bar.pivotPoint - gameData.bar.length / 2) + midwidth;
 		pivY = midheight;
-		drawCircle(pivX, pivY, 10);
+		drawCircle(pivX, pivY, 4);
 		drawRod(pivX, pivY, gameData.bar.pivotPoint, gameData.bar.length, gameData.bar.angle);
 		for(block in gameData.players){
+			if(block == uid){
+				canv.strokeStyle = "#00FF00";
+			} else {
+				canv.strokeStyle = "#0000FF";
+			}
 			drawBlock(pivX, pivY, gameData.bar.pivotPoint, gameData.players[block].position, gameData.bar.angle);
 		}
+		canv.strokeStyle="#000000";
 	}
 }
 

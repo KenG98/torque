@@ -70,6 +70,7 @@ io.on('connection', function (socket) {
 	});
 
 	io.emit('updateData', game);
+	socket.emit('uid', socket.id);
 
 });
 
