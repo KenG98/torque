@@ -21,7 +21,7 @@ bar.angularVelocity = 0;
 bar.angularAcceleration = 0;
 bar.torque = 0;
 var moment = 1 / 12 * bar.mass * bar.length * bar.length;
-moment += bar.mass * bar.length * bar.length;
+moment += bar.mass * (bar.length - bar.pivotPoint) * (bar.length - bar.pivotPoint);
 // moment might be calculated incorrectly... for the purposes of this game.
 bar.moment = moment;
 
@@ -52,7 +52,7 @@ io.on('connection', function (socket) {
 	socket.id = shortid.generate();
 	game.players[socket.id] = {};
 	game.players[socket.id].position = bar.length / 2;
-	game.players[socket.id].mass = 50000;
+	game.players[socket.id].mass = 10000;
 	// game.players[socket.id].velocity = 0;
 	// game.players[socket.id].acceleration = 0;
 
@@ -108,6 +108,11 @@ var recalculate = function() {
 	}
 
 	for(block in movingPlayers){
+		if(game.players[block].position < 0){
+			game.players[block].position = 0;
+		} else if (game.players[block].position > bar.length){
+			game.players[block].position = bar.length;
+		}
 		game.players[block].position += movingPlayers[block] * 10;
 	}
 
