@@ -13,6 +13,17 @@ var uid;
 
 var canv = canvas.getContext("2d");
 
+canv.font = "30px Arial";
+canv.fillStyle = "white";
+canv.textAlign = "center";
+
+canv.fillText = ("Hello Physics Nerds!", 50, 50);
+
+
+
+
+
+
 var gameData = {};
 
 socket.on('updateData', function(data){
@@ -53,7 +64,7 @@ function drawBlock(pivotX, pivotY, pivotPoint, position, angle) {
 }
 
 var redraw = function(){
-	// NOT EFFICIENT TO CHECK THIS EVERY TIME...
+	// NOT EFFICIENT TO CHECK THIS EVERY TIME...#0000FF
 	if(!$.isEmptyObject(gameData)){ 
 		// NOT EFFICIENT TO RECALCULATE THIS (pivx and pivy) EVERY TIME...
 		canv.clearRect(0, 0, width, height);
@@ -63,7 +74,7 @@ var redraw = function(){
 		drawRod(pivX, pivY, gameData.bar.pivotPoint, gameData.bar.length, gameData.bar.angle);
 		for(block in gameData.players){
 			if(block == uid){
-				canv.strokeStyle = "#00FF00";
+				canv.strokeStyle = "#ff1a1a";
 			} else {
 				canv.strokeStyle = "#0000FF";
 			}
