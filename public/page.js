@@ -43,11 +43,15 @@ function drawRod(pivotX, pivotY, pivotPoint, length, angle) {
 	canv.moveTo(0, 0);
 }
 
-function drawBlock(pivotX, pivotY, pivotPoint, position, angle) {
+function drawBlock(pivotX, pivotY, pivotPoint, position, angle, radius) {
 	var distanceFromPiv = position - pivotPoint;
 	var x = pivotX + Math.cos(angle) * distanceFromPiv;
 	var y = pivotY + Math.sin(angle) * distanceFromPiv;
-	drawCircle(x, y, 10);
+	drawCircle(x, y, radius);
+}
+
+function round(num){
+	return Math.round(num * 1000) / 1000;
 }
 
 var redraw = function(){
@@ -60,14 +64,23 @@ var redraw = function(){
 		} else {
 			canv.strokeStyle = "#0000FF";
 		}
-		drawBlock(pivX, pivY, gameData.bar.pivotPoint, gameData.players[block].position, gameData.bar.angle);
+		var radius = gameData.players[block].mass / 1000;
+		// radius = Math.cbrt(radius);
+		drawBlock(pivX, pivY, gameData.bar.pivotPoint, gameData.players[block].position, gameData.bar.angle, radius);
 	}
 	canv.strokeStyle="#000000";
 
-	canv.font = "30px Arial";
+	canv.font = "40px Arial";
 	canv.fillStyle = "white";
-	canv.textAlign = "center";
-	canv.fillText("Hello Physics Nerds!", midwidth, 100);
+	canv.fillText("Welcome to Torque!", 30, 50);
+	canv.font = "20px Arial";
+	canv.fillText("Balance the bar.", 30, 80);
+	canv.fillText("You're red. Others are blue.", 30, 110);
+	canv.fillText("Players: " + Object.keys(gameData.players).length, width - 200, 50);
+	canv.fillText("Angle: " + round(gameData.bar.angle), width - 200, 80);
+	canv.fillText("Velocity: " + round(gameData.bar.angularVelocity), width - 200, 110);
+	canv.fillText("Acceleration: " + round(gameData.bar.angularAcceleration), width - 200, 140);
+	canv.fillText("Torque: " + Math.round(gameData.bar.torque), width - 200, 170);
 }
 
 $(document).keydown(function(e) {

@@ -6,6 +6,8 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var port = 3000;
 
+var settingUp = false;
+
 var players = {};
 
 var gravity = 10;
@@ -51,8 +53,8 @@ io.on('connection', function (socket) {
 
 	socket.id = shortid.generate();
 	game.players[socket.id] = {};
-	game.players[socket.id].position = bar.length / 2;
-	game.players[socket.id].mass = 10000;
+	game.players[socket.id].position = Math.random() * (bar.length - 200) + 100;
+	game.players[socket.id].mass = Math.random() * 10000 + 5000;
 	// game.players[socket.id].velocity = 0;
 	// game.players[socket.id].acceleration = 0;
 
@@ -82,29 +84,29 @@ var recalculate = function() {
 	// calculate forces on each block (applied force from player, gravity, friction)
 	// move each damn block.
 
-	var torque = 0;
-	for(block in game.players){
-		var displacement = game.players[block].position - bar.pivotPoint; // dist from pivot -> + - <-
-		var currentTorque = game.players[block].mass * gravity * Math.cos(bar.angle) * displacement;
-		torque += currentTorque;
+	if(!settingUp){
+		var torque = 0;
+		for(block in game.players){
+			var displacement = game.players[block].position - bar.pivotPoint; // dist from pivot -> + - <-
+			var currentTorque = game.players[block].mass * gravity * Math.cos(bar.angle) * displacement;
+			torque += currentTorque;
+		}
+		var barDisplacement = bar.length / 2 - bar.pivotPoint;
+		var barTorque = bar.mass * gravity * Math.cos(bar.angle) * barDisplacement;
+		torque += barTorque;
+		bar.torque = torque;
+		var additionalMoment = 0;
+		for(block in game.players){
+			var disp = game.players[block].position - game.bar.pivotPoint;
+			additionalMoment += disp * disp * game.players[block].mass;
+		}
+		bar.angularAcceleration = bar.torque / (bar.moment + additionalMoment);
+		bar.angularVelocity += bar.angularAcceleration;
+		bar.angle += bar.angularVelocity;
 	}
-	var barDisplacement = bar.length / 2 - bar.pivotPoint;
-	var barTorque = bar.mass * gravity * Math.cos(bar.angle) * barDisplacement;
-	torque += barTorque;
-	bar.torque = torque;
-	var additionalMoment = 0;
-	for(block in game.players){
-		var disp = game.players[block].position - game.bar.pivotPoint;
-		additionalMoment += disp * disp * game.players[block].mass;
-	}
-	bar.angularAcceleration = bar.torque / (bar.moment + additionalMoment);
-	bar.angularVelocity += bar.angularAcceleration;
-	bar.angle += bar.angularVelocity;
-
-	if(bar.angle > 1.5 || bar.angle < -1.5){
-		bar.angle = 0;
-		bar.angularAcceleration = 0;
-		bar.angularVelocity = 0;
+	
+	if(bar.angle > 1.57 || bar.angle < -1.57){
+		theyDied();
 	}
 
 	for(block in movingPlayers){
@@ -118,6 +120,16 @@ var recalculate = function() {
 
 	io.emit('updateData', game);
 };
+
+function theyDied(){
+	bar.angle = 0;
+	bar.angularAcceleration = 0;
+	bar.angularVelocity = 0;
+	settingUp = true;
+	setTimeout(function(){
+		settingUp = false;
+	}, 3500)
+}
 
 setInterval(recalculate, 34);
 
