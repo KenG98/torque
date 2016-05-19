@@ -27,6 +27,7 @@ socket.on('uid', function(id){
 function drawCircle(x, y, radius) {
 	canv.beginPath();
 	canv.arc(x, y, radius, 0, 6.28);
+	canv.lineWidth = 3;
 	canv.stroke();
 }
 
@@ -39,6 +40,7 @@ function drawRod(pivotX, pivotY, pivotPoint, length, angle) {
 	var rightY = pivotY + Math.sin(angle) * rightLen;
 	canv.moveTo(leftX, leftY);
 	canv.lineTo(rightX, rightY);
+	canv.lineWidth= 4;
 	canv.stroke();
 	canv.moveTo(0, 0);
 }
@@ -60,11 +62,11 @@ var redraw = function(){
 	drawRod(pivX, pivY, gameData.bar.pivotPoint, gameData.bar.length, gameData.bar.angle);
 	for(block in gameData.players){
 		if(block == uid){
-			canv.strokeStyle = "#ff1a1a";
+			canv.strokeStyle = "#FB2B2B";
 		} else {
 			canv.strokeStyle = "#0000FF";
 		}
-		var radius = gameData.players[block].mass / 1000;
+		var radius = gameData.players[block].mass / 600;
 		// radius = Math.cbrt(radius);
 		drawBlock(pivX, pivY, gameData.bar.pivotPoint, gameData.players[block].position, gameData.bar.angle, radius);
 	}
